@@ -35,3 +35,13 @@ plugins:
   ubiquity-os-marketplace/text-vector-embeddings@v1.1.1:
     with:
       demoFlag: true
+  ubiquity-os-marketplace/daemon-pricing@main:
+    with:
+      labels:
+        time: *timeLabels
+        priority: *priorityLabels
+      basePriceMultiplier: 3
+      shouldFundContributorClosedIssue: false
+      globalConfigUpdate:
+        excludeRepos: []
+        
