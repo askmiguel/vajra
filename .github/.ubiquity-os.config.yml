@@ -1,4 +1,77 @@
+zeroTrue: &zeroTrue
+  score: 0
+  countWords: true
+zeroFalse: &zeroFalse
+  score: 0
+  countWords: false
+oneTrue: &oneTrue
+  score: 1
+  countWords: true
+oneFalse: &oneFalse
+  score: 1
+  countWords: false
+tcrHtmlConfig: &tcrHtmlConfig
+  a: *oneTrue
+  code: *oneFalse
+  img: *oneFalse
+  h1: *oneTrue
+  h2: *oneTrue
+  h3: *oneTrue
+  h4: *oneTrue
+  h5: *oneTrue
+  h6: *oneTrue
+  br: *zeroTrue
+  p: *zeroTrue
+  em: *zeroTrue
+  ul: *zeroTrue
+  td: *zeroTrue
+  hr: *zeroTrue
+  ol: *zeroTrue
+  pre: *zeroFalse
+  strong: *zeroFalse
+  blockquote: *zeroFalse
+  li:
+    score: 0.1
+    countWords: true
+allRoles: &allRoles
+  - collaborator
+  - contributor
+collaboratorOnly: &collaboratorOnly
+  - collaborator
+teamMembersOnly: &teamMembersOnly
+  - COLLABORATOR
+  - OWNER
+  - MEMBER
+  - ADMIN
+timeLabels: &timeLabels
+  - name: "Time: <15 Minutes"
+    collaboratorOnly: false
+  - name: "Time: <1 Hour"
+    collaboratorOnly: false
+  - name: "Time: <2 Hours"
+    collaboratorOnly: false
+  - name: "Time: <4 Hours"
+    collaboratorOnly: false
+  - name: "Time: <1 Day"
+    collaboratorOnly: false
+  - name: "Time: <1 Week"
+    collaboratorOnly: false
+priorityLabels: &priorityLabels
+  - name: "Priority: 0 (Regression)"
+    collaboratorOnly: false
+  - name: "Priority: 1 (Normal)"
+    collaboratorOnly: false
+  - name: "Priority: 2 (Medium)"
+    collaboratorOnly: false
+  - name: "Priority: 3 (High)"
+    collaboratorOnly: false
+  - name: "Priority: 4 (Urgent)"
+    collaboratorOnly: false
+  - name: "Priority: 5 (Emergency)"
+    collaboratorOnly: false
+
 plugins:
+  # --- Demo Overrides (Prioritized) ---
   ubiquity-os-marketplace/command-start-stop@demo:
     skipBotEvents: false
   ubiquity-os/command-demo@demo: null
@@ -44,4 +117,31 @@ plugins:
       shouldFundContributorClosedIssue: false
       globalConfigUpdate:
         excludeRepos: []
-        
+
+  # --- Remaining Org Config ---
+  ubiquity-os-marketplace/command-config@main:
+    with:
+      model: google/gemini-2.5-flash
+  ubiquity-os-marketplace/daemon-merging@main:
+    with:
+      approvalsRequired:
+        collaborator: 1
+        contributor: 2
+      mergeTimeout:
+        collaborator: 3.5 days
+        contributor: 7 days
+      repos:
+        monitor: []
+        ignore:
+          - ubiquibot
+          - launch-party
+          - staging
+          - production
+      allowedReviewerRoles:
+        - COLLABORATOR
+        - MEMBER
+        - OWNER
+  ubiquity-os-marketplace/daemon-spec-rewriter@main:
+    with:
+      openRouterAiModel: google/gemini-2.5-flash
+      openRouterBaseUrl: https://openrouter.ai/api/v1
